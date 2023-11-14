@@ -1,0 +1,119 @@
+# 建图相关参数
+lio_mapping: 
+    use_eskf: true # eskf 是否使用需要看是否使用 use_imu
+    measure_sync:
+        use_imu: false # 是否使用imu姿态 imu
+        use_gnss: false # 是否使用gnss信息作为真值
+        behind_time_limit: 0.2  #雷达数据之前的最多时间
+        exced_time_limit: 0.02  #最多超过的值,做插值
+        debug_info: false # 是否打印同步信息
+
+    lidar_topic: /rslidar_points
+    imu_topic: "/imu_data"
+    gnss_topic: "/fix"
+    # T_gnss_imu rpy xyz 
+    ext_r_gnss_imu: [0.0, 0.0, 1.5707963]
+    ext_t_gnss_imu: [0.0, 0.0, 0.0]
+    lidar_type: 0           # 0 robosense 1 velodyne 2 livox
+    matching_method: 1         # 0 loam 1 icp 2 ndt 选择loam (0) 时 lidar_type需要确定好 以及 loam_option num_scan
+    lio_option:
+        kf_distance: 2.0                              #关键帧距离
+        kf_angle_deg: 30                              #关键帧旋转角度
+        num_kfs_in_local_map: 10                      #局部地图含有多少个关键帧
+        gloal_map_filter: 0.3                         # voxel filter 
+        local_map_filter: 0.5                           
+        cur_scan_filter: 1.0                            
+        key_frame_path: "/tmp/key_frames/"            #关键帧存放地址
+        loam_key_frame_path: "/tmp/key_frames_loam/"  #loam关键帧存放地址
+        map_path: "/tmp/map/"                         #地图存放地址
+        trajectory_path: "/tmp/trajectory/mapping/"   #路径存放地址  
+        # T_imu_lidar rpy xyz 
+        ext_r: [3.1416926, 0.0, 0.0]                  
+        ext_t: [0.0, 0.0, 0.0] 
+    icp_option:
+        max_iteration: 20
+        max_nn_distance: 1.0
+        max_plane_distance: 0.1
+        max_line_distance: 0.5
+        min_effective_pts: 10
+        eps: 0.01
+        euc_fitness_eps: 0.36
+        method: 0           # 0 p2p 1 p2line 2 p2plane
+    ndt_option:
+        max_iteration: 20                   # 最大迭代次数
+        voxel_size: 1.0                     # 体素大小
+        min_effective_pts: 10               # 最近邻点数阈值
+        min_pts_in_voxel: 3                 # 每个栅格中最小点数
+        max_pts_in_voxel: 50                # 每个栅格中最大点数
+        eps: 0.01                           # 收敛判定条件
+        res_outlier_th: 20                  # 异常值拒绝阈值
+        remove_centroid: false              # 是否计算两个点云中心并移除中心？
+        capacity: 100000                    # 缓存的体素数量
+        nearby_type: 0                      # 0: cenert 1: 6nearby
+        method: 2                           # 0 pcl_ndt 1 direct_ndt 2 INCREMENTAL_NDT (0暂时没有)
+    loam_option: 
+        num_scan: 32                   # 雷达线数
+        min_edge_pts: 20               # 最小边缘点数
+        min_surf_pts: 20               # 最小平面点数
+        max_iteration: 20              # 最大迭代次数
+        use_edge_points: true          # 是否使用边缘点
+        use_surf_points: true          # 是否使用平面点
+    
+    
+# 定位相关参数
+lio_matching:
+    lidar_topic: "/rslidar_points"
+    imu_topic: "/imu_data"
+    gnss_topic: "/fix"
+    lidar_type: 0                                                   # 0 robosense 1 velodyne 2 livox
+    matching_method: 2                                              # 0 loam 1 icp 2 ndt 选择loam (0) 时 lidar_type需要确定好
+    use_imu: true # 是否使用imu姿态 imu
+    use_gnss: true # 是否使用gnss信息作为真值
+    use_eskf: true # 是否使用eskf融合
+    origin_latitude: 36.509905
+    origin_longitude: 116.802690
+    origin_altitude_: 69.921000
+    # T_gnss_imu rpy xyz 
+    ext_r_gnss_imu: [0.0, 0.0, 1.5707963]
+    ext_t_gnss_imu: [0.0, 0.0, 0.0]
+    
+    loc_option:
+        global_map_filter: 0.3                                      # voxel filter
+        cur_scan_filter: 1.0                       
+        box_filter_size: [150.0, 150.0, 150.0]                     # box filter x y z step size
+        edge_loam_map_path: "/root/workspace/map/edge_map.pcd"     #loam关键帧存放地址
+        surf_loam_map_path: "/root/workspace/map/surf_map.pcd"     #loam关键帧存放地址
+        map_path: "/root/workspace/shangao_map/filtered_map.pcd"                    #地图存放地址
+        trajectory_path: "/tmp/trajectory/matching/"                #路径存放地址    
+        # T_imu_lidar rpy xyz 
+        ext_r: [3.1416926, 0.0, 0.0]                  
+        ext_t: [0.0, 0.0, 0.0]
+    icp_option:
+        max_iteration: 20
+        max_nn_distance: 1.0
+        max_plane_distance: 0.1
+        max_line_distance: 0.5
+        min_effective_pts: 10
+        eps: 0.01
+        euc_fitness_eps: 0.36
+        method: 0           # 0 p2p 1 p2line 2 p2plane
+    ndt_option:
+        max_iteration: 20                   # 最大迭代次数
+        voxel_size: 1.2                     # 体素大小
+        inv_voxel_size: 1.0                 
+        min_effective_pts: 10               # 最近邻点数阈值
+        min_pts_in_voxel: 3                 # 每个栅格中最小点数
+        max_pts_in_voxel: 50                # 每个栅格中最大点数
+        eps: 0.01                           # 收敛判定条件
+        res_outlier_th: 20                  # 异常值拒绝阈值
+        remove_centroid: false              # 是否计算两个点云中心并移除中心？
+        capacity: 100000                    # 缓存的体素数量
+        nearby_type: 1                      # 0: cenert 1: 6nearby
+        method: 1                           # 0 pcl_ndt 1 direct_ndt 2 INCREMENTAL_NDT
+    loam_option: 
+        num_scan: 16                   # 雷达线数
+        min_edge_pts: 20               # 最小边缘点数
+        min_surf_pts: 20               # 最小平面点数
+        max_iteration: 20              # 最大迭代次数
+        use_edge_points: true          # 是否使用边缘点
+        use_surf_points: true          # 是否使用平面点

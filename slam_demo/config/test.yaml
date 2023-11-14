@@ -1,0 +1,27 @@
+
+lio_mapping:
+    lidar_topic: /rslidar_points
+    imu_topic: /imu_data
+    icp_option:
+        max_iteration: 20
+        max_nn_distance: 1.0
+        max_plane_distance: 0.1
+        max_line_distance: 0.5
+        min_effective_pts_: 10
+        eps: 0.01
+        euc_fitness_eps: 0.36
+        method: 0           # 0 p2p 1 p2line 2 p2plane
+
+    loam_option: 
+        min_edge_pts: 20               # 最小边缘点数
+        min_surf_pts: 20               # 最小平面点数
+        max_iteration: 20              # 最大迭代次数
+        use_edge_points: true          # 是否使用边缘点
+        use_surf_points: true          # 是否使用平面点
+
+        
+lio_matching:
+    lidar_topic: /rslidar_points
+    imu_topic: /imu_data
+
+
