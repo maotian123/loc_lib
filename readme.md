@@ -22,3 +22,5 @@ sudo make install
 链接: https://pan.baidu.com/s/1_DK5gty31HBNWcpAwusu7Q?pwd=u3rq 提取码: u3rq 
 --来自百度网盘超级会员v5的分享
 ```
+
+希望使用的各位给个star阿！
