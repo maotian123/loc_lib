@@ -273,7 +273,12 @@ namespace LocUtils
             return false;
         }
 
-        pcl::io::loadPCDFile(loc_option_.map_path_, *global_map_ptr_);
+        int load_ret = pcl::io::loadPCDFile(loc_option_.map_path_, *global_map_ptr_);
+        if (load_ret != 0)
+        {
+            LOG(ERROR) << "Failed to load global map from: " << loc_option_.map_path_;
+            return false;
+        }
 
         global_map_filter_ptr_->Filter(global_map_ptr_, global_map_ptr_);
         LOG(INFO) << "\tLoad Global Map, size:" << global_map_ptr_->points.size();

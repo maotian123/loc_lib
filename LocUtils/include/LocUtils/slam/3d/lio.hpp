@@ -96,7 +96,7 @@ namespace LocUtils
             bool IsKeyframe(const SE3& current_pose);
             
             void InitEskf();
-            void InitDataPath();
+            bool InitDataPath();
             // 初始化点云滤波
             void InitCloudFilter();
 

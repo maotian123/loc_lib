@@ -98,12 +98,25 @@ namespace LocUtils
         return static_imu_init_ptr_->InitSuccess();
     }
 
-    void Lio::InitDataPath()
+    bool Lio::InitDataPath()
     {
-        FileManager::InitDirectory(lio_option_.key_frame_path_, "Point Cloud Key Frames");
-        FileManager::InitDirectory(lio_option_.loam_key_frame_path_, "Loam Point Cloud Key Frames");
-        FileManager::InitDirectory(lio_option_.map_path_, "Map Save");
-        FileManager::InitDirectory(lio_option_.trajectory_path_, "Estimated Trajectory");
+        if (!FileManager::InitDirectory(lio_option_.key_frame_path_, "Point Cloud Key Frames")) {
+            LOG(ERROR) << "Failed to init directory: " << lio_option_.key_frame_path_;
+            return false;
+        }
+        if (!FileManager::InitDirectory(lio_option_.loam_key_frame_path_, "Loam Point Cloud Key Frames")) {
+            LOG(ERROR) << "Failed to init directory: " << lio_option_.loam_key_frame_path_;
+            return false;
+        }
+        if (!FileManager::InitDirectory(lio_option_.map_path_, "Map Save")) {
+            LOG(ERROR) << "Failed to init directory: " << lio_option_.map_path_;
+            return false;
+        }
+        if (!FileManager::InitDirectory(lio_option_.trajectory_path_, "Estimated Trajectory")) {
+            LOG(ERROR) << "Failed to init directory: " << lio_option_.trajectory_path_;
+            return false;
+        }
+        return true;
     }
 
     void Lio::InitCloudFilter()

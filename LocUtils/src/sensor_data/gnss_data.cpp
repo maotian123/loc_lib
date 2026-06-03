@@ -34,9 +34,9 @@ namespace LocUtils
     void GnssData::UpdateXYZ() {
         
         if (!origin_position_inited) {
-            LOG(ERROR) << "WARNING: GeoConverter is NOT initialized.";
+            LOG(ERROR) << "GeoConverter is NOT initialized, cannot UpdateXYZ.";
+            return;
         }
-        // LOG(INFO) << origin_latitude;
         geo_converter.Forward(latitude_, longitude_, altitude_, local_E_, local_N_, local_U_);
     }
 
@@ -45,7 +45,8 @@ namespace LocUtils
         double &lat, double &lon, double &alt
     ) {
         if (!origin_position_inited) {
-            LOG(ERROR) << "WARNING: GeoConverter is NOT initialized.";
+            LOG(ERROR) << "GeoConverter is NOT initialized, cannot Reverse.";
+            return;
         }
 
         geo_converter.Reverse(local_E, local_N, local_U, lat, lon, alt);
