@@ -31,7 +31,7 @@ namespace LocUtils
                 return a1 < a2;
             }
             //排序
-			static bool SortFileList(std::vector<std::string> files_lists, std::string file_type)
+			static bool SortFileList(std::vector<std::string>& files_lists, std::string file_type)
             {
                 if (files_lists.empty())
                     return false;

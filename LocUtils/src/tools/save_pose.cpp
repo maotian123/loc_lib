@@ -14,6 +14,9 @@ namespace LocUtils
     :method_(method),pose_file_path_(pose_file_path)
     {
         pose_file_.open(pose_file_path_);
+        if (!pose_file_.is_open()) {
+            LOG(ERROR) << "Failed to open pose file: " << pose_file_path_;
+        }
         pose_file_.setf(std::ios::fixed);// 关闭科学计数格式
         pose_file_.precision(12);// 保留12位小数
     }

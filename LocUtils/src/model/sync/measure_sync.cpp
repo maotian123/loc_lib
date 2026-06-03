@@ -15,7 +15,8 @@ namespace LocUtils
     {
         if(cloud.time < last_timestamp_lidar_)
         {
-            LOG(ERROR) << "lidar time erro ";
+            LOG(ERROR) << "lidar timestamp out of order: " << cloud.time << " < " << last_timestamp_lidar_;
+            return;
         }
 
         measures_.Reset();
@@ -29,7 +30,8 @@ namespace LocUtils
     {
         if(cloud.time < last_timestamp_lidar_)
         {
-            LOG(ERROR) << "lidar time erro ";
+            LOG(ERROR) << "lidar timestamp out of order: " << cloud.time << " < " << last_timestamp_lidar_;
+            return;
         }
 
         measures_.Reset();

@@ -94,7 +94,7 @@ namespace LocUtils
         }
         catch (const std::exception& error)
         {
-            std::string sError = error.what();
+            LOG(ERROR) << "GetFilesNameFromDirectory failed for path: " << sPath << ", error: " << error.what();
         }
         return false;
     }
@@ -119,7 +119,7 @@ namespace LocUtils
         }
         catch (const std::exception& error)
         {
-            std::string sError = error.what();
+            LOG(ERROR) << "GetFilesNameFromDirectory failed for path: " << sPath << ", error: " << error.what();
         }
         return false;
     }

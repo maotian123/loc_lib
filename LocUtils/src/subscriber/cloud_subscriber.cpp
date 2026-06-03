@@ -59,7 +59,8 @@ bool CloudConver::Conver(const CloudDataRsLidar &input, CloudDataFullType &outpu
 
 bool CloudConver::Conver(const CloudDataVelodyneLidar &input, CloudDataFullType &output)
 {
-
+  LOG(WARNING) << "CloudConver::Conver for VelodyneLidar is not implemented";
+  return false;
 }
 
 
@@ -109,9 +110,10 @@ bool CloudSubscriber::AddNormal(const sensor_msgs::PointCloud2::ConstPtr& cloud_
     if(cloud_conver_.Conver(normal_cloud_data, new_cloud_data))
     {
         new_cloud_data_.push_back(new_cloud_data);
-
         return true;
-    }  
+    }
+    LOG(WARNING) << "CloudSubscriber::AddNormal conversion failed";
+    return false;
 }
 
 bool CloudSubscriber::AddRslidar(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg_ptr)

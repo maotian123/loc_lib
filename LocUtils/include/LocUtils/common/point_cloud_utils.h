@@ -5,6 +5,8 @@
 #pragma once
 #include "LocUtils/common/point_types.h"
 
+#include <glog/logging.h>
+
 /// 点云的一些工具函数
 
 namespace LocUtils {
@@ -20,16 +22,26 @@ inline CloudPtr RemoveNanPoint(const CloudPtr& input)
 }
 
 // 保存点云文件
-inline void SaveCloudToFile(const std::string &filePath, CloudPtr &cloud) {
+inline bool SaveCloudToFile(const std::string &filePath, CloudPtr &cloud) {
     cloud->height = 1;
     cloud->width = cloud->size();
-    pcl::io::savePCDFileASCII(filePath, *cloud);
+    int ret = pcl::io::savePCDFileASCII(filePath, *cloud);
+    if (ret != 0) {
+        LOG(ERROR) << "Failed to save PCD file: " << filePath;
+        return false;
+    }
+    return true;
 }
 
-//读取点云PCD文件(就一句话，还是封装1下吧)
-inline void ReadCloudFromPCDFile(const std::string& filePath, CloudPtr& cloud)
+//读取点云PCD文件
+inline bool ReadCloudFromPCDFile(const std::string& filePath, CloudPtr& cloud)
 {
-    pcl::io::loadPCDFile(filePath, *cloud);
+    int ret = pcl::io::loadPCDFile(filePath, *cloud);
+    if (ret != 0) {
+        LOG(ERROR) << "Failed to load PCD file: " << filePath;
+        return false;
+    }
+    return true;
 }
 /// 体素滤波
 void VoxelGrid(CloudPtr cloud, float voxel_size = 0.05);

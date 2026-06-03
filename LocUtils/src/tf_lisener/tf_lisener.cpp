@@ -1,5 +1,7 @@
 #include "LocUtils/tf_lisener/tf_lisener.hpp"
 
+#include <glog/logging.h>
+
 namespace LocUtils
 {
     TFListener::TFListener(ros::NodeHandle& nh, std::string base_frame_id, std::string child_frame_id) 
@@ -18,6 +20,7 @@ namespace LocUtils
         } 
         catch (tf::TransformException &ex) 
         {
+            LOG(WARNING) << "Lookup3DData failed (" << base_frame_id_ << " -> " << child_frame_id_ << "): " << ex.what();
             return false;
         }
     }
@@ -37,6 +40,7 @@ namespace LocUtils
         } 
         catch (tf::TransformException &ex) 
         {
+            LOG(WARNING) << "Lookup2DData failed (" << base_frame_id_ << " -> " << child_frame_id_ << "): " << ex.what();
             return false;
         }
     }
