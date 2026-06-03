@@ -22,6 +22,7 @@
 #include "LocUtils/common/math_utils.h"
 
 #include "LocUtils/common/point_cloud_utils.h"
+#include "LocUtils/common/eskf_init_utils.h"
 
 #include <pcl/io/pcd_io.h>
 #include <thread>

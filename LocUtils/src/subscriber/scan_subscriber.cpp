@@ -18,14 +18,6 @@ void LaserScanSubscriber::msg_callback(const sensor_msgs::LaserScan::ConstPtr& l
 }
 
 void LaserScanSubscriber::ParseData(std::deque<sensor_msgs::LaserScan>& deque_laser_scan_data) {
-    buff_mutex_.lock();
-
-    // pipe all available measurements to output buffer:
-    if (new_laser_scan_data_.size() > 0) {
-        deque_laser_scan_data.insert(deque_laser_scan_data.end(), new_laser_scan_data_.begin(), new_laser_scan_data_.end());
-        new_laser_scan_data_.clear();
-    }
-    
-    buff_mutex_.unlock();
+    DrainBuffer(buff_mutex_, new_laser_scan_data_, deque_laser_scan_data);
 }
 } // namespace data_input

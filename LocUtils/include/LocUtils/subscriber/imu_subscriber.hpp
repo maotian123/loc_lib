@@ -14,6 +14,7 @@
 #include "sensor_msgs/Imu.h"
 
 #include "LocUtils/sensor_data/imu_data.hpp"
+#include "LocUtils/common/subscriber_utils.h"
 namespace LocUtils {
 class IMUSubscriber {
   public:

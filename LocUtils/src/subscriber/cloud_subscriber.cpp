@@ -133,28 +133,12 @@ bool CloudSubscriber::AddRslidar(const sensor_msgs::PointCloud2::ConstPtr& cloud
 }
 
 void CloudSubscriber::ParseData(std::deque<CloudData>& deque_cloud_data) {
-    buff_mutex_.lock();
-
-    // pipe all available measurements to output buffer:
-    if (new_cloud_data_.size() > 0) {
-        deque_cloud_data.insert(deque_cloud_data.end(), new_cloud_data_.begin(), new_cloud_data_.end());
-        new_cloud_data_.clear();
-    }
-    
-    buff_mutex_.unlock();
+    DrainBuffer(buff_mutex_, new_cloud_data_, deque_cloud_data);
 }
 
 void CloudSubscriber::ParseData(std::deque<CloudDataFullType>& deque_cloud_data)
 {
-    buff_mutex_.lock();
-
-    // pipe all available measurements to output buffer:
-    if (new_cloud_full_data_.size() > 0) {
-        deque_cloud_data.insert(deque_cloud_data.end(), new_cloud_full_data_.begin(), new_cloud_full_data_.end());
-        new_cloud_full_data_.clear();
-    }
-    
-    buff_mutex_.unlock();
+    DrainBuffer(buff_mutex_, new_cloud_full_data_, deque_cloud_data);
 }
 
 } // namespace data_input

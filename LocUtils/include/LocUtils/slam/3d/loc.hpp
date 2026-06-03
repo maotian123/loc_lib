@@ -20,6 +20,7 @@
 #include "LocUtils/common/common.h"
 #include "LocUtils/common/point_cloud_utils.h"
 #include "LocUtils/common/math_utils.h"
+#include "LocUtils/common/eskf_init_utils.h"
 
 #include "LocUtils/model/eskf/eskf.hpp"
 #include "LocUtils/model/static_init/static_imu_init.h"

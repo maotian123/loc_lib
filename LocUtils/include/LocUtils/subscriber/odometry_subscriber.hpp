@@ -8,6 +8,7 @@
 #include <nav_msgs/Odometry.h>
 
 #include "LocUtils/common/pose_data.hpp"
+#include "LocUtils/common/subscriber_utils.h"
 
 namespace LocUtils
 {

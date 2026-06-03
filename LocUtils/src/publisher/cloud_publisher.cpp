@@ -36,24 +36,6 @@ void CloudPublisher::Publish(FullCloudPtr&  cloud_ptr_input) {
     PublishData(cloud_ptr_input, time);
 }
 
-void CloudPublisher::PublishData(CloudPtr&  cloud_ptr_input, ros::Time time) {
-    sensor_msgs::PointCloud2Ptr cloud_ptr_output(new sensor_msgs::PointCloud2());
-    pcl::toROSMsg(*cloud_ptr_input, *cloud_ptr_output);
-
-    cloud_ptr_output->header.stamp = time;
-    cloud_ptr_output->header.frame_id = frame_id_;
-    publisher_.publish(*cloud_ptr_output);
-}
-
-void CloudPublisher::PublishData(FullCloudPtr&  cloud_ptr_input, ros::Time time) {
-    sensor_msgs::PointCloud2Ptr cloud_ptr_output(new sensor_msgs::PointCloud2());
-    pcl::toROSMsg(*cloud_ptr_input, *cloud_ptr_output);
-
-    cloud_ptr_output->header.stamp = time;
-    cloud_ptr_output->header.frame_id = frame_id_;
-    publisher_.publish(*cloud_ptr_output);
-}
-
 bool CloudPublisher::HasSubscribers() {
     return publisher_.getNumSubscribers() != 0;
 }
