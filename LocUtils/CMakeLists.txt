@@ -152,27 +152,9 @@ configure_file(
         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/locutils-config.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/locutils-config.cmake @ONLY)
 
-file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/locutils-config.cmake.in 
-    "\@PACKAGE_INIT\@
-    find_package(GeographicLib REQUIRED)
-    find_package(yaml-cpp REQUIRED)
-    get_filename_component (_dir \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)
-    get_filename_component (_prefix \"\${_dir}/../..\" ABSOLUTE)
-    message(\"Find LocUtils Success\")
-    message(\"CMAKE_CURRENT_LIST_FILE : \" \${CMAKE_CURRENT_LIST_FILE})
-    # Import the targets.
-    include (\"\${_prefix}/share/LocUtils/locutils-targets.cmake\")
-    set(LocUtils_INCLUDE_DIRS \"\")
-    list(APPEND LocUtils_INCLUDE_DIRS \"${INCLUDE_DIR_LIST}\")
-    set(LocUtils_LIBRARIES \"\${_prefix}/lib/libLocUtils.so\")
-    list(APPEND LocUtils_LIBRARIES \"${ALL_TARGET_LIBRARIES}\")  
-
-    message(\"LocUtils_INCLUDE_DIRS : \" \${LocUtils_INCLUDE_DIRS})
-    message(\"LocUtils_LIBRARIES : \" \${LocUtils_LIBRARIES})
-
-    #导出变量
-    set(LocUtils_FOUND TRUE)
-")
+# Note: locutils-config.cmake.in uses @PACKAGE_INIT@, @INCLUDE_DIR_LIST@, and
+# @ALL_TARGET_LIBRARIES@ placeholders that are expanded by configure_file above.
+# Do NOT overwrite the template with build-machine-specific absolute paths.
      
 # Install package configuration files
 install(FILES

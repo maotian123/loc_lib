@@ -81,9 +81,9 @@ lio_matching:
         global_map_filter: 0.3                                      # voxel filter
         cur_scan_filter: 1.0                       
         box_filter_size: [150.0, 150.0, 150.0]                     # box filter x y z step size
-        edge_loam_map_path: "/root/workspace/map/edge_map.pcd"     #loam关键帧存放地址
-        surf_loam_map_path: "/root/workspace/map/surf_map.pcd"     #loam关键帧存放地址
-        map_path: "/root/workspace/shangao_map/filtered_map.pcd"                    #地图存放地址
+        edge_loam_map_path: "map/edge_map.pcd"                    #loam关键帧存放地址
+        surf_loam_map_path: "map/surf_map.pcd"                     #loam关键帧存放地址
+        map_path: "map/filtered_map.pcd"                            #地图存放地址
         trajectory_path: "/tmp/trajectory/matching/"                #路径存放地址    
         # T_imu_lidar rpy xyz 
         ext_r: [3.1416926, 0.0, 0.0]                  

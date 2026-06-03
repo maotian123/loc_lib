@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
     ros::init(argc, argv, "lio_mapping_node");
     ros::NodeHandle nh;
    
-    std::string yaml_path {"/root/workspace/loc_lib/slam_demo/config/slam.yaml"};
-    // std::string yaml_path {"/root/loc_lib/slam_demo/config/slam.yaml"};
+    std::string yaml_path;
+    nh.param<std::string>("yaml_path", yaml_path, "config/slam.yaml");
     lio_mapping_flow_ptr_ = std::make_shared<LioMappingFlow>(nh, yaml_path);
     ros::Subscriber cmd_sub = nh.subscribe("loc_cmd_sub", 100, LocSubCmdCallback);
     std::thread save_map_thread(SaveMapThread);
