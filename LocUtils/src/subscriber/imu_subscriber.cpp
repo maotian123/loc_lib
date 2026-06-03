@@ -35,13 +35,6 @@ void IMUSubscriber::msg_callback(const sensor_msgs::ImuConstPtr& imu_msg_ptr) {
 }
 
 void IMUSubscriber::ParseData(std::deque<IMU>& imu_data_buff) {
-    buff_mutex_.lock();
-    // pipe all available measurements to output buffer:
-    if (new_imu_data_.size() > 0) {
-        imu_data_buff.insert(imu_data_buff.end(), new_imu_data_.begin(), new_imu_data_.end());
-        new_imu_data_.clear();
-    }
-
-    buff_mutex_.unlock();
+    DrainBuffer(buff_mutex_, new_imu_data_, imu_data_buff);
 }
 }

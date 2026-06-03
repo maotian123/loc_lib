@@ -97,6 +97,28 @@ void UpdateMeanAndCov(int hist_m, int curr_n, const Eigen::Matrix<S, D, 1>& hist
               (hist_m + curr_n);
 }
 
+/**
+ * SVD-based covariance regularization and information matrix computation.
+ * Clamps small singular values relative to the largest, then computes the
+ * inverse (information matrix) as V * inv(Lambda) * U^T.
+ * @param sigma        covariance matrix
+ * @param min_ratio    minimum allowed ratio of lambda_i / lambda_0
+ * @return             regularized information matrix
+ */
+inline Mat3d ComputeRegularizedInfoMatrix(const Mat3d& sigma, double min_ratio = 1e-3)
+{
+    Eigen::JacobiSVD<Mat3d> svd(sigma, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    Vec3d lambda = svd.singularValues();
+    if (lambda[1] < lambda[0] * min_ratio) {
+        lambda[1] = lambda[0] * min_ratio;
+    }
+    if (lambda[2] < lambda[0] * min_ratio) {
+        lambda[2] = lambda[0] * min_ratio;
+    }
+    Mat3d inv_lambda = Vec3d(1.0 / lambda[0], 1.0 / lambda[1], 1.0 / lambda[2]).asDiagonal();
+    return svd.matrixV() * inv_lambda * svd.matrixU().transpose();
+}
+
 template <typename C, typename D, typename Getter>
 void ComputeMedian(const C& data, D& median, Getter&& getter) {
     size_t len = data.size();

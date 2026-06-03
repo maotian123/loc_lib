@@ -114,20 +114,7 @@ namespace LocUtils
                 math::ComputeMeanAndCov(v.second.idx_, v.second.mu_, v.second.sigma_,
                                     [this](const size_t& idx) { return ToVec3d(target_->points[idx]); });
 
-                // SVD 检查最大与最小奇异值，限制最小奇异值
-                Eigen::JacobiSVD svd(v.second.sigma_, Eigen::ComputeFullU | Eigen::ComputeFullV);
-                Vec3d lambda = svd.singularValues();
-                if (lambda[1] < lambda[0] * 1e-3) {
-                    lambda[1] = lambda[0] * 1e-3;
-                }
-
-                if (lambda[2] < lambda[0] * 1e-3) {
-                    lambda[2] = lambda[0] * 1e-3;
-                }
-
-                Mat3d inv_lambda = Vec3d(1.0 / lambda[0], 1.0 / lambda[1], 1.0 / lambda[2]).asDiagonal();
-                
-                v.second.info_ = svd.matrixV() * inv_lambda * svd.matrixU().transpose();
+                v.second.info_ = math::ComputeRegularizedInfoMatrix(v.second.sigma_);
                 
             }
         });
@@ -219,19 +206,7 @@ namespace LocUtils
             v.num_pts_ += v.pts_.size();
             v.pts_.clear();
 
-            // check info
-            Eigen::JacobiSVD svd(v.sigma_, Eigen::ComputeFullU | Eigen::ComputeFullV);
-            Vec3d lambda = svd.singularValues();
-            if (lambda[1] < lambda[0] * 1e-3) {
-                lambda[1] = lambda[0] * 1e-3;
-            }
-
-            if (lambda[2] < lambda[0] * 1e-3) {
-                lambda[2] = lambda[0] * 1e-3;
-            }
-
-            Mat3d inv_lambda = Vec3d(1.0 / lambda[0], 1.0 / lambda[1], 1.0 / lambda[2]).asDiagonal();
-            v.info_ = svd.matrixV() * inv_lambda * svd.matrixU().transpose();
+            v.info_ = math::ComputeRegularizedInfoMatrix(v.sigma_);
         }
     }
 

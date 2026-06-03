@@ -30,6 +30,9 @@ namespace LocUtils
             void Publish(const std::vector<Vec3f> &marker, const Vec3f &rgb);
 
         private:
+            void SetupMarker(visualization_msgs::Marker &m, int id,
+                             float x, float y, float z,
+                             const Vec3f &rgb);
 
             ros::NodeHandle nh_;
             ros::Publisher publisher_;

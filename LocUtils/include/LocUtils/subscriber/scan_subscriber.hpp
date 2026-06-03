@@ -15,7 +15,7 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
-
+#include "LocUtils/common/subscriber_utils.h"
 
 namespace LocUtils {
 class LaserScanSubscriber {

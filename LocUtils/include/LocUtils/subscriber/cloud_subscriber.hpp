@@ -29,6 +29,7 @@
 
 #include "LocUtils/sensor_data/cloud_data.hpp"
 #include "LocUtils/common/point_cloud_utils.h"
+#include "LocUtils/common/subscriber_utils.h"
 namespace LocUtils {
 
 enum class LidarType

@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 
 #include <pcl/registration/icp.h>
 #include <pcl/common/transforms.h>
@@ -115,9 +116,10 @@ namespace LocUtils
                 }
             }
         
-            bool AlignP2P(const SE3& init_pose, SE3& result_pose);
-            bool AlignP2Plane(const SE3& init_pose, SE3& result_pose);
-            bool AlignP2Line(const SE3& init_pose, SE3& result_pose);
+            using HBComputeFunc = std::function<bool(const SE3&, Mat6d&, Vec6d&)>;
+            bool AlignIterative(const SE3& init_pose, SE3& result_pose,
+                                const HBComputeFunc& compute_hb,
+                                double h_scale = 1.0);
             bool AlignPCLICP(const SE3& init_pose, SE3& result_pose);
             
             bool CaculateMatrixHAndBP2P(const SE3& predict_pose, Mat6d &H, Vec6d &B);

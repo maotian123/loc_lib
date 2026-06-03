@@ -223,13 +223,17 @@ namespace LocUtils
         switch (options_.method_)
         {
             case IcpMethod::P2P:
-                AlignP2P(predict_pose, result_pose);
+                AlignIterative(predict_pose, result_pose,
+                    [this](const SE3& p, Mat6d& H, Vec6d& B) { return CaculateMatrixHAndBP2P(p, H, B); },
+                    1.0 / 16);
                 break;
             case IcpMethod::P2LINE:
-                AlignP2Line(predict_pose, result_pose);
+                AlignIterative(predict_pose, result_pose,
+                    [this](const SE3& p, Mat6d& H, Vec6d& B) { return CaculateMatrixHAndBP2Line(p, H, B); });
                 break;
             case IcpMethod::P2PLANE:
-                AlignP2Plane(predict_pose, result_pose);
+                AlignIterative(predict_pose, result_pose,
+                    [this](const SE3& p, Mat6d& H, Vec6d& B) { return CaculateMatrixHAndBP2Plane(p, H, B); });
                 break;
             case IcpMethod::PCLICP:
                 AlignPCLICP(predict_pose, result_pose);
@@ -264,118 +268,33 @@ namespace LocUtils
         // LOG(INFO) << "source center: " << source_center_.transpose();
     }
 
-    bool IcpRegistration::AlignP2P(const SE3& init_pose, SE3& result_pose)
+    bool IcpRegistration::AlignIterative(const SE3& init_pose, SE3& result_pose,
+                                          const HBComputeFunc& compute_hb,
+                                          double h_scale)
     {
-        // LOG(INFO) << "aligning with point to point";
         assert(target_ != nullptr && source_ != nullptr);
         SE3 predic_pose = init_pose;
-        //只估计旋转的模式
-        if (!options_.use_initial_translation_) 
+        if (!options_.use_initial_translation_)
         {
-            predic_pose.translation() = target_center_ - source_center_;  // 设置平移初始值
+            predic_pose.translation() = target_center_ - source_center_;
         }
-        // // 接下里的代码配合 书 7.2 
-        // //3 x 6的矩阵
- 
-        for (int iter = 0; iter < options_.max_iteration_; ++iter) 
+
+        for (int iter = 0; iter < options_.max_iteration_; ++iter)
         {
             Mat6d H {Mat6d::Zero()};
             Vec6d err {Vec6d::Zero()};
-            if(CaculateMatrixHAndBP2P(predic_pose, H, err))
+            if (compute_hb(predic_pose, H, err))
             {
-                LOG(INFO) << H.inverse();
-                Vec6d dx = H.inverse()/16 * err;
+                Vec6d dx = H.inverse() * h_scale * err;
                 predic_pose.so3() = predic_pose.so3() * SO3::exp(dx.head<3>());
                 predic_pose.translation() += dx.tail<3>();
 
-                // 更新
-                // LOG(INFO) << "iter " << iter << " total res: " << total_res << ", eff: " << effective_num
-                //       << ", mean res: " << total_res / effective_num << ", dxn: " << dx.norm();
-                
-                if (dx.norm() < options_.eps_) 
+                if (dx.norm() < options_.eps_)
                 {
-                    // LOG(INFO) << "converged, dx = " << dx.transpose();
-                    break;
-                }
-            }  
-        }
-        result_pose = predic_pose;
-    }
-
-    bool IcpRegistration::AlignP2Line(const SE3& init_pose,SE3& result_pose)
-    {
-        // LOG(INFO) << "aligning with point to line";
-        assert(target_ != nullptr && source_ != nullptr);
-        SE3 predic_pose = init_pose;
-        
-        if (!options_.use_initial_translation_) 
-        {
-            predic_pose.translation() = target_center_ - source_center_;  // 设置平移初始值
-        }
-
-        Eigen::Matrix<double, 3, 6> jacobians;
-        
-        for (int iter = 0; iter < options_.max_iteration_; ++iter) 
-        {
-            Mat6d H {Mat6d::Zero()};
-            Vec6d err {Vec6d::Zero()};
-
-            if(CaculateMatrixHAndBP2Line(predic_pose, H, err))
-            {
-                Vec6d dx = H.inverse() * err;
-                predic_pose.so3() = predic_pose.so3() * SO3::exp(dx.head<3>());
-                predic_pose.translation() += dx.tail<3>();
-
-                // 更新
-                // LOG(INFO) << "iter " << iter << " total res: " << total_res << ", eff: " << effective_num
-                //       << ", mean res: " << total_res / effective_num << ", dxn: " << dx.norm();
-                
-                if (dx.norm() < options_.eps_) 
-                {
-                    LOG(INFO) << "converged, dx = " << dx.transpose();
-                    break;
-                }
-            }  
-        }
-
-        result_pose = predic_pose;
-        return true;
-    }
-
-    bool IcpRegistration::AlignP2Plane(const SE3& init_pose,SE3& result_pose)
-    {
-        // LOG(INFO) << "aligning with point to plane";
-        assert(target_ != nullptr && source_ != nullptr);
-        SE3 predic_pose = init_pose;
-        
-        if (!options_.use_initial_translation_) 
-        {
-            predic_pose.translation() = target_center_ - source_center_;  // 设置平移初始值
-        }
-
-        Eigen::Matrix<double, 3, 6> jacobians;
-        
-        for (int iter = 0; iter < options_.max_iteration_; ++iter) 
-        {
-            Mat6d H {Mat6d::Zero()};
-            Vec6d err {Vec6d::Zero()};
-            if(CaculateMatrixHAndBP2Plane(predic_pose, H, err))
-            {
-                Vec6d dx = H.inverse() * err;
-                predic_pose.so3() = predic_pose.so3() * SO3::exp(dx.head<3>());
-                predic_pose.translation() += dx.tail<3>();
-
-                // 更新
-                // LOG(INFO) << "iter " << iter << ", dxn: " << dx.norm();
-                
-                if (dx.norm() < options_.eps_) 
-                {
-                    // LOG(INFO) << "converged, dx = " << dx.transpose();
                     break;
                 }
             }
         }
-
         result_pose = predic_pose;
         return true;
     }

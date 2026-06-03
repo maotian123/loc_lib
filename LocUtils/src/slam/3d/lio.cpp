@@ -57,45 +57,13 @@ namespace LocUtils
 
     void Lio::InitEskf()
     {
-        static_imu_init_ptr_ = std::make_shared<LocUtils::StaticIMUInit>();
-        eskf_ptr_ = std::make_shared<LocUtils::ESKFD>();
-
-        Vec3d T_imu_lidar = math::VecFromArray(lio_option_.ext_t);
-        Mat3d R_imu_lidar = math::RpyToRotM2(lio_option_.ext_r[0], lio_option_.ext_r[1], lio_option_.ext_r[2]);
-
-        TIL_ = SE3(R_imu_lidar, T_imu_lidar);
-        LOG(INFO) << "---------- TIL_ ---------" << TIL_.matrix();
+        TIL_ = InitEskfCommon(static_imu_init_ptr_, eskf_ptr_,
+                              lio_option_.ext_t, lio_option_.ext_r);
     }
 
     bool Lio::InitImu(std::deque<IMU> &imu_buff)
     {
-        if(static_imu_init_ptr_ == nullptr)
-            static_imu_init_ptr_ = std::make_shared<LocUtils::StaticIMUInit>();
-        
-        if(true == static_imu_init_ptr_->InitSuccess())
-        {
-            LOG(INFO) << " static imu init ok ";
-            return true;
-        }
-
-        while (!imu_buff.empty())
-        {
-            IMU cur_imu_data = imu_buff.front();
-            static_imu_init_ptr_->AddIMU(cur_imu_data);
-            if(true == static_imu_init_ptr_->InitSuccess())
-            {
-                LOG(INFO) << " static imu init ok ";
-                EskfOptions eskf_option;
-                eskf_option.gyro_var_ = sqrt(static_imu_init_ptr_->GetCovGyro()[0]);
-                eskf_option.acce_var_ = sqrt(static_imu_init_ptr_->GetCovAcce()[0]);
-                eskf_ptr_->SetInitialConditions(eskf_option, static_imu_init_ptr_->GetInitBg(),
-                                                        static_imu_init_ptr_->GetInitBa(), static_imu_init_ptr_->GetGravity());
-                has_init_eskf_ = true;
-                return true;
-            } 
-            imu_buff.pop_front();
-        }
-        return static_imu_init_ptr_->InitSuccess();
+        return InitImuCommon(static_imu_init_ptr_, eskf_ptr_, imu_buff, has_init_eskf_);
     }
 
     void Lio::InitDataPath()

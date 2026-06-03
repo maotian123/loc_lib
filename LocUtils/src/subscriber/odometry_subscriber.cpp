@@ -44,11 +44,6 @@ namespace LocUtils
 
     void OdometrySubscriber::ParseData(std::deque<PoseData>& pose_data_buff) 
     {
-        buff_mutex_.lock();
-        if (new_pose_data_.size() > 0) {
-            pose_data_buff.insert(pose_data_buff.end(), new_pose_data_.begin(), new_pose_data_.end());
-            new_pose_data_.clear();
-        }
-        buff_mutex_.unlock();
+        DrainBuffer(buff_mutex_, new_pose_data_, pose_data_buff);
     }
 }

@@ -16,6 +16,7 @@
 #include "sensor_msgs/NavSatFix.h"
 
 #include "LocUtils/sensor_data/gnss_data.hpp"
+#include "LocUtils/common/subscriber_utils.h"
 
 namespace LocUtils {
 class GnssSubscriber {

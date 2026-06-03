@@ -30,14 +30,6 @@ void GnssSubscriber::msg_callback(const sensor_msgs::NavSatFixConstPtr& gnss_msg
 }
 
 void GnssSubscriber::ParseData(std::deque<GnssData>& deque_gnss_data) {
-    buff_mutex_.lock();
-
-    // pipe all available measurements to output buffer:
-    if (new_gnss_data_.size() > 0) {
-        deque_gnss_data.insert(deque_gnss_data.end(), new_gnss_data_.begin(), new_gnss_data_.end());
-        new_gnss_data_.clear();
-    }
-
-    buff_mutex_.unlock();
+    DrainBuffer(buff_mutex_, new_gnss_data_, deque_gnss_data);
 }
 }
