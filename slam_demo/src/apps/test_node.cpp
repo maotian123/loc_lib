@@ -378,8 +378,8 @@ void TestBFNN()
     std::shared_ptr<LocUtils::SearchPointInterface> search_point_ptr = std::make_shared<LocUtils::BfnnRegistration>();
     LocUtils::CloudPtr first(new LocUtils::PointCloudType);
     LocUtils::CloudPtr second(new LocUtils::PointCloudType);
-    pcl::io::loadPCDFile("/root/workspace/loc_lib/data/first.pcd", *first);
-    pcl::io::loadPCDFile("/root/workspace/loc_lib/data/second.pcd", *second);
+    pcl::io::loadPCDFile("data/first.pcd", *first);
+    pcl::io::loadPCDFile("data/second.pcd", *second);
     if(first->empty() || second->empty())
     {
         LOG(ERROR) << "NO CLOUD DATA";
@@ -409,8 +409,8 @@ void TestKdtree()
     std::shared_ptr<LocUtils::SearchPointInterface> search_point_ptr = std::make_shared<LocUtils::KdtreeRegistration>();
     LocUtils::CloudPtr first(new LocUtils::PointCloudType);
     LocUtils::CloudPtr second(new LocUtils::PointCloudType);
-    pcl::io::loadPCDFile("/root/workspace/loc_lib/data/first.pcd", *first);
-    pcl::io::loadPCDFile("/root/workspace/loc_lib/data/second.pcd", *second);
+    pcl::io::loadPCDFile("data/first.pcd", *first);
+    pcl::io::loadPCDFile("data/second.pcd", *second);
     if(first->empty() || second->empty())
     {
         LOG(ERROR) << "NO CLOUD DATA";
@@ -439,8 +439,8 @@ void TestMatching()
     LocUtils::CloudPtr first(new LocUtils::PointCloudType);
     LocUtils::CloudPtr second(new LocUtils::PointCloudType);
     LocUtils::CloudPtr result(new LocUtils::PointCloudType);
-    pcl::io::loadPCDFile("/root/workspace/loc_lib/data/first.pcd", *first);
-    pcl::io::loadPCDFile("/root/workspace/loc_lib/data/second.pcd", *second);
+    pcl::io::loadPCDFile("data/first.pcd", *first);
+    pcl::io::loadPCDFile("data/second.pcd", *second);
     SE3 init_pos, T_lc_ln;
 
     LocUtils::IcpOptions icp_option;
@@ -455,7 +455,7 @@ void TestMatching()
     icp_match_ptr_->SetInputTarget(first);
     // 配准
     icp_match_ptr_->ScanMatch(second, init_pos, result, T_lc_ln);
-    LocUtils::SaveCloudToFile("/root/workspace/loc_lib/data/result.pcd", result);
+    LocUtils::SaveCloudToFile("data/result.pcd", result);
     LOG(INFO) << "matching ok ";
 }
 
@@ -469,7 +469,7 @@ void TestParameter(int argc, char *argv[])
     LocUtils::LoamOption loam_option;
     icp_option.method_ = LocUtils::IcpMethod::P2LINE;
     
-    LocUtils::Parameters param("/root/loc_lib/slam_demo/config/slam.yaml");
+    LocUtils::Parameters param("config/slam.yaml");
     int max_iter = param.GetParamFromYaml("lio_mapping/icp_option/max_iteration", 10);
     max_iter = param.GetParamFromYaml("lio_mapping/icp_option/max_iteration", 10);
     max_iter = param.GetParamFromYaml("lio_mapping/icp_option/max_iteration", 10);
@@ -522,7 +522,7 @@ void TestGNSS(int argc, char *argv[])
 
     std::shared_ptr<LocUtils::GeoToEnu> convert_ptr = std::make_shared<LocUtils::GeoToEnu>();
     std::shared_ptr<LocUtils::SavePose> save_pose_ptr
-        = std::make_shared<LocUtils::SavePose>(LocUtils::SavePose::SavePoseMethod::KITTI, "/tmp/pose/gnss_pose_test.txt"); 
+        = std::make_shared<LocUtils::SavePose>(LocUtils::SavePose::SavePoseMethod::KITTI, "output/gnss_pose_test.txt"); 
 
     std::thread detectKeyProcess(DetectKeyBoardGNSS, save_pose_ptr, final_poses_ptr);
     detectKeyProcess.detach();
@@ -674,7 +674,7 @@ void TestScanContext(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-    // LOG(INFO) << boost::filesystem::exists("/root/workspace/loc_lib/slam_demo/config/slam.yaml");
+    // LOG(INFO) << boost::filesystem::exists("config/slam.yaml");
     // TestGNSS(argc, argv);
     // TestParameter(argc, argv);
     // TestLidarSub(argc, argv);

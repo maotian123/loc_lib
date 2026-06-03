@@ -11,6 +11,7 @@
 #include "LocUtils/common/eigen_types.h"
 #include "LocUtils/mapping_2d/multi_resolution_likelihood_field.hpp"
 #include "LocUtils/mapping_2d/submap.hpp"
+#include <boost/filesystem.hpp>
 #include <fstream>
 #include <map>
 #include <memory>
@@ -37,7 +38,11 @@ class LoopClosing {
         bool valid_ = true;
     };
 
-    LoopClosing() { debug_fout_.open("/home/lxy/carto_ws/loops.txt"); }
+    LoopClosing(const std::string& debug_output_path = "/tmp/loc_utils_debug/loops.txt") {
+        boost::filesystem::create_directories(
+            boost::filesystem::path(debug_output_path).parent_path());
+        debug_fout_.open(debug_output_path);
+    }
 
     /// 添加最近的submap，这个submap可能正在构建中
     void AddNewSubmap(std::shared_ptr<Submap> submap);

@@ -161,7 +161,7 @@ void Mapping2D::ExpandSubmap() {
     auto last_submap = current_submap_;
 
     // debug
-    // cv::imwrite("/home/lxy/carto_ws/" + std::to_string(last_submap->GetId()) + ".png",
+    // cv::imwrite("debug_output/" + std::to_string(last_submap->GetId()) + ".png",
     //             last_submap->GetOccuMap().GetOccupancyGridBlackWhite());
 
     current_submap_ = std::make_shared<Submap>(current_frame_->pose_);
